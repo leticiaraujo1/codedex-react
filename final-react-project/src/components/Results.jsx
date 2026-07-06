@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserContext } from "./UserContext";
+import {UserContext} from "./UserContext";
 
 export default function Results({ element, artwork }) {
   const { name } = useContext(UserContext);
