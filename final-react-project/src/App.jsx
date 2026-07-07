@@ -55,6 +55,46 @@ export default function App() {
       return counts[a] > counts[b] ? a : b
     });
   };
+
+  async function fetchArtwork(keyword) {
+  try {
+    const searchResponse = await fetch(
+      `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${keyword}`
+    );
+
+    const searchData = await searchResponse.json();
+
+    if (!searchData.objectIDs || searchData.objectIDs.length === 0) {
+      setArtwork(null);
+      return;
+    }
+
+    const objectId = searchData.objectIDs[0];
+
+    const artworkResponse = await fetch(
+      `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
+    );
+
+    const artworkData = await artworkResponse.json();
+
+    setArtwork(artworkData);
+
+  } catch (error) {
+    console.error(error);
+  }
+  }
+
+  useEffect(
+  function () {
+    if (currentQuestionIndex === questions.length) {
+      const selectedElement = determineElement(answers);
+      setElement(selectedElement);
+      fetchArtwork(keywords[selectedElement]);
+    }
+    },
+    [currentQuestionIndex]
+  );
+
   return (
     <div>
       <UserProvider value={{ name: userName, setName: setUserName }}>
